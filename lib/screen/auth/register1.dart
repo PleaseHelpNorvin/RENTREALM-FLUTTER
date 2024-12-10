@@ -167,7 +167,8 @@ class Register1ScreenState extends State<Register1Screen> {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen())
+        MaterialPageRoute(
+          builder: (context) => LoginScreen()),
         // MaterialPageRoute(
         //   builder: (context) => Register2Screen(
         //     userId : userid,
