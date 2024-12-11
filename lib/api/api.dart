@@ -1,3 +1,5 @@
 class Api {
-  static const String baseUrl = 'http://192.168.100.90:8000/api';
+  //change baseurl depends on pc ipconfig ipaddress
+
+  static const String baseUrl = 'http://192.168.0.16:8000/api';
 }

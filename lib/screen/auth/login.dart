@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../utils/https.dart';
 import './register1.dart';
 
 class LoginScreen extends StatefulWidget{
@@ -10,6 +11,11 @@ class LoginScreen extends StatefulWidget{
 class LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final apiService = ApiService();
 
   bool isLoading = false;
   String? emailError;
