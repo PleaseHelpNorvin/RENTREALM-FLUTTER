@@ -9,38 +9,57 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: new ThemeData(
+      theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-          appBarTheme: AppBarTheme(
-            backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Set your desired color here
-          ),
-          cardTheme: CardTheme(
-            color: Colors.blueAccent, // Set your desired card background color here
-          ),
-          iconTheme: IconThemeData(
-            color: const Color.fromARGB(255, 255, 255, 255), // Set default icon color for all icons
-          ),
-
-          textTheme: const TextTheme(
-            headlineLarge: TextStyle(color: Colors.black), // Equivalent to headline1
-            headlineMedium: TextStyle(color: Colors.black), // Equivalent to headline2
-            headlineSmall: TextStyle(color: Colors.black), // Equivalent to headline3
-            titleLarge: TextStyle(color: Color.fromARGB(255, 255, 255, 255)), // Equivalent to headline4
-            titleMedium: TextStyle(color: Color.fromARGB(255, 245, 240, 240)), // Equivalent to headline5
-            titleSmall: TextStyle(color: Color.fromARGB(255, 237, 236, 236)), // Equivalent to headline6
-            bodyLarge: TextStyle(color: Colors.black), // Equivalent to bodyText1
-            bodyMedium: TextStyle(color: Colors.black), // Equivalent to bodyText2
-            bodySmall: TextStyle(color: Colors.black), // Equivalent to bodyText2 small
-            labelLarge: TextStyle(color: Colors.black), // Equivalent to subtitle1
-            labelMedium: TextStyle(color: Colors.black), // Equivalent to subtitle2
-            labelSmall: TextStyle(color: Colors.black), // Equivalent to caption
-          ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Keep the white color
         ),
-      home: GetstartedScreen(),
+        cardTheme: CardTheme(
+          color: Colors.blueAccent,
+        ),
+        iconTheme: IconThemeData(
+          color: const Color.fromARGB(255, 255, 255, 255),
+        ),
+        textTheme: const TextTheme(
+          headlineLarge: TextStyle(color: Colors.black),
+          headlineMedium: TextStyle(color: Colors.black),
+          headlineSmall: TextStyle(color: Colors.black),
+          titleLarge: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+          titleMedium: TextStyle(color: Color.fromARGB(255, 245, 240, 240)),
+          titleSmall: TextStyle(color: Color.fromARGB(255, 237, 236, 236)),
+          bodyLarge: TextStyle(color: Colors.black),
+          bodyMedium: TextStyle(color: Colors.black),
+          bodySmall: TextStyle(color: Colors.black),
+          labelLarge: TextStyle(color: Colors.black),
+          labelMedium: TextStyle(color: Colors.black),
+          labelSmall: TextStyle(color: Colors.black),
+        ),
+      ),
+      home: Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 200.0,
+              pinned: true,
+              backgroundColor: Colors.white,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  color: Colors.white,
+                ),
+                title: Text('Your Title'),
+              ),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                GetstartedScreen(), // Your screen content
+              ]),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
