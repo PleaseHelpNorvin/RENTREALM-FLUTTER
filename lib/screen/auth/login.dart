@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../utils/https.dart';
 import './register1.dart';
+import '../home.dart';
 
-class LoginScreen extends StatefulWidget{
-
+class LoginScreen extends StatefulWidget {
   @override
   LoginScreenState createState() => LoginScreenState();
 }
@@ -12,7 +12,6 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final apiService = ApiService();
@@ -20,83 +19,138 @@ class LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   String? emailError;
   String? passwordError;
-@override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        
         automaticallyImplyLeading: false,
         title: const Text("Login"),
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                // const SizedBox(height: 20),
-                Image.asset(
-                  "assets/images/rentrealm_logo.png",
-                  width: 200,
-                  height: 200,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Image.asset(
+                "assets/images/rentrealm_logo.png",
+                width: 200,
+                height: 200,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
                 ),
-                // const SizedBox(height: 10),
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                    errorText: emailError,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required';
+                  }
+                  if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+                      .hasMatch(value)) {
+                    return 'Enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required';
+                  }
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () => loginUser(context),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  backgroundColor: Colors.blue,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
                   ),
-                  
+                  foregroundColor: Colors.white,
                 ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: const OutlineInputBorder(),
-                    errorText: passwordError,
-                  ),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 40),
-                ElevatedButton(
-                  onPressed: () => loginUser(context),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50), // Set the height
-                    backgroundColor: Colors.blue, // Set the button color to blue
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero, // No border radius
-                    ),
-                    foregroundColor: Colors.white, 
-                  ), 
-                  child: const Text("Login"),
-                ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                child: const Text("Login"),
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Register1Screen()),
                   );
-                  },
-                  child: const Text(
-                    "Don't have an account? Register Here",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
-                    ),
+                },
+                child: const Text(
+                  "Don't have an account? Register Here",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    decoration: TextDecoration.underline,
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
   Future<void> loginUser(BuildContext context) async {
-    "hi";
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    final email = emailController.text;
+    final password = passwordController.text;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    // Call your API service here to perform login
+    final response = await apiService.loginUser(
+      email: email,
+      password: password,
+    );
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (response != null && response.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login Successful: ${response.message}')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(
+          userId: response.data?.user.id ?? 0,
+          name: response.data?.user.name ?? '',
+          email: email,
+          token: response.data?.token ?? '',
+        )),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login Failed: ${response?.message}')),
+      );
+    }
   }
 }

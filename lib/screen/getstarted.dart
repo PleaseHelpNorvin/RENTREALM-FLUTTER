@@ -44,7 +44,7 @@ class GetStartedScreenState extends State<GetstartedScreen> {
               ElevatedButton(
                 onPressed: () => redirectToRegister(),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40), backgroundColor: Colors.orange, // Button color
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40), backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Button color
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30), // Rounded corners
                   ),
@@ -53,7 +53,7 @@ class GetStartedScreenState extends State<GetstartedScreen> {
                   "Get Started",
                   style: TextStyle(
                     fontSize: 18,
-                    color: Colors.white,
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
               ),

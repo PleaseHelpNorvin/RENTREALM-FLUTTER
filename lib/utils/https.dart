@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:rentrealm/model/login.dart';
 //api
 import '../api/api.dart';
 //models
@@ -15,7 +16,6 @@ class ApiService {
     required String name,
     required String email,
     required String password,
-    // required String role,
   }) async {
 
     final url = Uri.parse('${Api.baseUrl}/create/tenant'); // Replace with your API endpoint
@@ -26,7 +26,6 @@ class ApiService {
         "name": name,
         "email": email,
         "password": password,
-        // "role": role,
       };
 
       // Make POST request
@@ -54,4 +53,42 @@ class ApiService {
       return null;
     }
   }
+
+  //login api call
+  Future<userLoginResponse?>loginUser({
+    required String email,
+    required String password,
+  }) async {
+    final url = Uri.parse('${Api.baseUrl}/login');
+
+    try {
+      // Prepare request body
+      final body = {
+        "email" : email,
+        "password" : password,
+      };
+
+      // Make POST request
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(body),
+      );
+
+      if(response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return userLoginResponse.fromJson(responseData);
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exeption: $e');
+      return null;
+    }
+  }
+  
 }
