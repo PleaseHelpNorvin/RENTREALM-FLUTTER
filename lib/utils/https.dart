@@ -152,5 +152,47 @@ class ApiService {
       return null;
     }
   }
+
+  static Future<void> updateUser({
+    required int userId,
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    final url = Uri.parse('${Api.baseUrl}/updateUser/$userId'); // Adjust the endpoint
+
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update user data');
+    }
+  }
+
+
+  static Future<void> updateProfileData({
+    required int userId,
+    required Map<String, String> profileData,
+  }) async {
+    final url = Uri.parse('${Api.baseUrl}/updateProfile/$userId'); // Adjust the endpoint
+
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(profileData),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update profile data');
+    }
+  }
+
   
 }

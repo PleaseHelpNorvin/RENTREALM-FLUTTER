@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import '../../model/userprofile.dart';
+import 'package:http/http.dart';
+import 'package:rentrealm/utils/https.dart';
 import '../../api/api.dart';
 
 class MyProfileScreen extends StatefulWidget {
@@ -21,7 +22,6 @@ class MyProfileScreen extends StatefulWidget {
   final String social_security_number;
   final String occupation;
   final DateTime? updated_at;
-
 
   const MyProfileScreen({
     super.key,
@@ -50,11 +50,47 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class MyProfileScreenState extends State<MyProfileScreen> {
-  
-  // This variable will control the expansion of each card
-  bool isProfileExpanded = false;
+  bool isProfileExpanded = true;
   bool isAddressExpanded = false;
   bool isIdExpanded = false;
+
+  // Variables to track the editable state of fields
+  bool isEditingProfilePictureUrl = false; //not yet
+  bool isEditingName = false;
+  bool isEditingEmail = false;
+  bool isEditingPassword = false;
+  bool isEditingAddress = false;
+  bool isEditingCountry = false;
+  bool isEditingCity = false; 
+  bool isEditingMunicipality = false;
+  bool isEditingBarangay = false;
+  bool isEditingZone = false;
+  bool isEditingStreet = false;
+  bool isEditingPostalCode = false;
+  bool isEditingDriverLicense = false;
+  bool isEditingNationalId = false;
+  bool isEditingPassport = false; //not yet
+  bool isEditingSssNumber = false;
+
+  //User Related Controller;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  // Controllers to manage the text field input
+  //profiles related controllers
+  final TextEditingController profilePictureUrlController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController countryController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController municipalityController = TextEditingController();
+  final TextEditingController barangayController = TextEditingController();
+  final TextEditingController zoneController = TextEditingController();
+  final TextEditingController streetController = TextEditingController();
+  final TextEditingController postalCodeController = TextEditingController();
+  final TextEditingController driverLicenseController = TextEditingController();
+  final TextEditingController nationalIdController = TextEditingController();
+  final TextEditingController passportNumberController = TextEditingController();
+  final TextEditingController sssNumberContoller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +102,7 @@ class MyProfileScreenState extends State<MyProfileScreen> {
         title: Text('My Profile'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView( // Wrap the entire content in a scroll view
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,9 +115,8 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                     ? widget.profile_picture_url.replaceAll(Api.baseUrl, '')
                     : 'assets/images/profile_placeholder.png', // Default placeholder
               ),
-
             ),
-            SizedBox(height: 20), // Space between avatar and card
+            SizedBox(height: 20),
 
             // Expandable Card for Profile Details
             GestureDetector(
@@ -108,22 +143,99 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                             style: textTheme.titleLarge,
                           ),
                           Icon(
-                            isProfileExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                            isProfileExpanded
+                                ? Icons.arrow_drop_up
+                                : Icons.arrow_drop_down,
                             size: 16,
                             color: iconTheme.color,
                           ),
                         ],
                       ),
-                      // Display input fields if expanded
+                      // Profile fields with "Edit" button
                       if (isProfileExpanded) ...[
-                        TextField(
-                          decoration: InputDecoration(labelText: 'Name'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingName
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: nameController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Name'),
+                                    ),
+                                  )
+                                : Text(nameController.text.isEmpty
+                                    ? 'Name'
+                                    : nameController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingName ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingName = !isEditingName;
+                                  if (!isEditingName) {
+                                    // Save the edited name when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'Email'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingEmail
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: emailController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Email'),
+                                    ),
+                                  )
+                                : Text(emailController.text.isEmpty
+                                    ? 'Email'
+                                    : emailController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingEmail ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingEmail = !isEditingEmail;
+                                  if (!isEditingEmail) {
+                                    // Save the edited email when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'password'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingPassword
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: passwordController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Password'),
+                                    ),
+                                  )
+                                : Text(passwordController.text.isEmpty
+                                    ? 'Password'
+                                    : passwordController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingPassword ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingPassword = !isEditingPassword;
+                                  if (!isEditingPassword) {
+                                    // Save the edited password when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ],
@@ -153,41 +265,278 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Address Related Row',
+                            'Address',
                             style: textTheme.titleLarge,
                           ),
                           Icon(
-                            isAddressExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                            isAddressExpanded
+                                ? Icons.arrow_drop_up
+                                : Icons.arrow_drop_down,
                             size: 16,
                             color: iconTheme.color,
                           ),
                         ],
                       ),
-                      // Display input fields if expanded
-                      if (isAddressExpanded) ...[ 
-                        TextField(
-                          decoration: InputDecoration(labelText: 'Address'),
+                      if (isAddressExpanded) ...[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingAddress
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: addressController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Address'),
+                                    ),
+                                  )
+                                : Text(addressController.text.isEmpty
+                                    ? 'Address'
+                                    : addressController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingAddress ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingAddress = !isEditingAddress;
+                                  if (!isEditingAddress) {
+                                    // Save the edited address when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'country'),
+                        // Repeat the same for other address fields
+                        // Country row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingCountry
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: countryController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Country'),
+                                    ),
+                                  )
+                                : Text(countryController.text.isEmpty
+                                    ? 'Country'
+                                    : countryController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingCountry ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingCountry = !isEditingCountry;
+                                  if (!isEditingCountry) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'city'),
+                        // City row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingCity
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: cityController,
+                                      decoration:
+                                          InputDecoration(labelText: 'City'),
+                                    ),
+                                  )
+                                : Text(cityController.text.isEmpty
+                                    ? 'City'
+                                    : cityController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingCity ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingCity = !isEditingCity;
+                                  if (!isEditingCity) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'municipality'),
+                        //municipality row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingCity
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: municipalityController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Municipality'),
+                                    ),
+                                  )
+                                : Text(municipalityController.text.isEmpty
+                                    ? 'Municipality'
+                                    : municipalityController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingCity ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingCity = !isEditingCity;
+                                  if (!isEditingCity) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'barangay'),
+                        //Barangay row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingBarangay
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: barangayController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Barangay'),
+                                    ),
+                                  )
+                                : Text(barangayController.text.isEmpty
+                                    ? 'Barangay'
+                                    : barangayController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingBarangay ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingBarangay = !isEditingBarangay;
+                                  if (!isEditingBarangay) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'zone'),
+                        //Zone row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingZone
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: zoneController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Zone'),
+                                    ),
+                                  )
+                                : Text(zoneController.text.isEmpty
+                                    ? 'Zone'
+                                    : zoneController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingZone ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingZone = !isEditingZone;
+                                  if (!isEditingZone) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'street'),
+                        //Street row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingStreet
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: streetController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Street'),
+                                    ),
+                                  )
+                                : Text(streetController.text.isEmpty
+                                    ? 'Street'
+                                    : streetController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingStreet ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingStreet = !isEditingStreet;
+                                  if (!isEditingStreet) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'postal_code'),
+                        //Street row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingStreet
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: streetController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Street'),
+                                    ),
+                                  )
+                                : Text(streetController.text.isEmpty
+                                    ? 'Street'
+                                    : streetController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingStreet ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingStreet = !isEditingStreet;
+                                  if (!isEditingStreet) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingPostalCode
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: postalCodeController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Postal Code'),
+                                    ),
+                                  )
+                                : Text(postalCodeController.text.isEmpty
+                                    ? 'Postal Code'
+                                    : postalCodeController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingPostalCode ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingPostalCode = !isEditingPostalCode;
+                                  if (!isEditingPostalCode) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ],
@@ -196,7 +545,7 @@ class MyProfileScreenState extends State<MyProfileScreen> {
               ),
             ),
 
-            // Expandable Card for ID Details
+            // More expandable cards for Identification here...
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -217,24 +566,133 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Id Related Row',
+                            'Identification',
                             style: textTheme.titleLarge,
                           ),
                           Icon(
-                            isIdExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                            isIdExpanded
+                                ? Icons.arrow_drop_up
+                                : Icons.arrow_drop_down,
                             size: 16,
                             color: iconTheme.color,
                           ),
                         ],
                       ),
-                      // Display input fields if expanded
                       if (isIdExpanded) ...[
-                        
-                        TextField(
-                          decoration: InputDecoration(labelText: 'ID Number'),
+                        //Driver License Field
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingDriverLicense
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: driverLicenseController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Driver License Number'),
+                                    ),
+                                  )
+                                : Text(driverLicenseController.text.isEmpty
+                                    ? 'Driver License Number'
+                                    : driverLicenseController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingDriverLicense ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingDriverLicense = !isEditingDriverLicense;
+                                  if (!isEditingDriverLicense) {
+                                    // Save the edited address when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
-                        TextField(
-                          decoration: InputDecoration(labelText: 'Issuing Authority'),
+                        // National Id row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingNationalId
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: nationalIdController,
+                                      decoration:
+                                          InputDecoration(labelText: 'National Id Number'),
+                                    ),
+                                  )
+                                : Text(nationalIdController.text.isEmpty
+                                    ? 'National Id Number'
+                                    : nationalIdController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingNationalId ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingNationalId = !isEditingNationalId;
+                                  if (!isEditingNationalId) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingPassport
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: passportNumberController,
+                                      decoration:
+                                          InputDecoration(labelText: 'Passport Number'),
+                                    ),
+                                  )
+                                : Text(passportNumberController.text.isEmpty
+                                    ? 'Passport Number'
+                                    : passportNumberController.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingPassport ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingPassport = !isEditingPassport;
+                                  if (!isEditingPassport) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        //sssNumber row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            isEditingSssNumber
+                                ? Expanded(
+                                    child: TextField(
+                                      controller: sssNumberContoller,
+                                      decoration:
+                                          InputDecoration(labelText: 'Social Security System Number'),
+                                    ),
+                                  )
+                                : Text(sssNumberContoller.text.isEmpty
+                                    ? 'Social Security System Number'
+                                    : sssNumberContoller.text),
+                            IconButton(
+                              icon: Icon(
+                                  isEditingSssNumber ? Icons.check : Icons.edit),
+                              onPressed: () {
+                                setState(() {
+                                  isEditingSssNumber = !isEditingSssNumber;
+                                  if (!isEditingSssNumber) {
+                                    // Save the edited country when done
+                                  }
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ],
@@ -242,17 +700,23 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                 ),
               ),
             ),
+
+            // More expandable cards for other sections here...
+
             SizedBox(height: 20),
+
             Row(
               children: [
                 Expanded(
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () => (),
+                      onPressed: () => _onUpdatedProfile(context),
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0),
-                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+                        backgroundColor:
+                            const Color.fromARGB(255, 255, 255, 255),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -268,11 +732,65 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                   ),
                 ),
               ],
-            )
+            ),
           ],
-        ),  
+        ),
       ),
     );
-    
   }
+  
+  Future<void> _onUpdatedProfile(BuildContext context) async {
+    // Gather the data from the controllers
+    int userId = widget.userId; // Replace with actual user ID
+
+    // Prepare user data for the update
+    String name = nameController.text;
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    Map<String, String> profileData = {
+      'profile_picture_url': profilePictureUrlController.text,
+      // 'address': addressController.text, // Uncomment if needed
+      'country': countryController.text,
+      'city': cityController.text,
+      'municipality': municipalityController.text,
+      'barangay': barangayController.text,
+      'zone': zoneController.text,
+      'street': streetController.text,
+      'postal_code': postalCodeController.text,
+      'driver_license_number': driverLicenseController.text,
+      'national_id': nationalIdController.text,
+      'passport_number': passportNumberController.text,
+      'social_security_number': sssNumberContoller.text,
+    };
+
+    try {
+      // Update user data (e.g., name, email, password)
+      await ApiService.updateUser(
+        userId: userId,
+        name: name,
+        email: email,
+        password: password,
+      );
+
+      // Update profile data (e.g., address, country, etc.)
+      await ApiService.updateProfileData(
+        userId: userId,
+        profileData: profileData,
+        
+      );
+
+      // Show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile updated successfully!')),
+      );
+    } catch (error) {
+      // Handle errors (e.g., API call failure)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile.')),
+      );
+    }
+  }
+
+  
 }
