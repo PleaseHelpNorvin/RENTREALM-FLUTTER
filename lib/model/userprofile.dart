@@ -67,7 +67,7 @@ class ProfileData {
 
       profilePictureUrl: json['profile_picture_url'] != null && json['profile_picture_url'].isNotEmpty
           ? json['profile_picture_url'] ?? ''
-          : 'assets/images/default_profile_picture.png',
+          : 'assets/images/profile_placeholder.png',
 
       phoneNumber: json['phone_number'],
       socialMediaLinks: json [''] ?? '',

@@ -23,7 +23,8 @@ class MyProfileScreen extends StatefulWidget {
   final DateTime? updated_at;
 
 
-  MyProfileScreen({
+  const MyProfileScreen({
+    super.key,
     required this.userId,
     required this.profile_picture_url,
     required this.phone_number,
@@ -121,6 +122,9 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                         TextField(
                           decoration: InputDecoration(labelText: 'Email'),
                         ),
+                        TextField(
+                          decoration: InputDecoration(labelText: 'password'),
+                        ),
                       ],
                     ],
                   ),
@@ -160,12 +164,30 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                         ],
                       ),
                       // Display input fields if expanded
-                      if (isAddressExpanded) ...[
+                      if (isAddressExpanded) ...[ 
                         TextField(
-                          decoration: InputDecoration(labelText: 'Address Line 1'),
+                          decoration: InputDecoration(labelText: 'Address'),
                         ),
                         TextField(
-                          decoration: InputDecoration(labelText: 'City'),
+                          decoration: InputDecoration(labelText: 'country'),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(labelText: 'city'),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(labelText: 'municipality'),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(labelText: 'barangay'),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(labelText: 'zone'),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(labelText: 'street'),
+                        ),
+                        TextField(
+                          decoration: InputDecoration(labelText: 'postal_code'),
                         ),
                       ],
                     ],
@@ -207,6 +229,7 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                       // Display input fields if expanded
                       if (isIdExpanded) ...[
+                        
                         TextField(
                           decoration: InputDecoration(labelText: 'ID Number'),
                         ),

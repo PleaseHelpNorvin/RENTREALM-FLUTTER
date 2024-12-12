@@ -6,7 +6,7 @@ class Register2Screen extends StatefulWidget{
   final String email;
   final String token;
 
-  Register2Screen({
+  const Register2Screen({
     required this.userId,
     required this.name,
     required this.email,

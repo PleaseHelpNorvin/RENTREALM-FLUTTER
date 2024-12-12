@@ -13,7 +13,8 @@ class HomeScreen extends StatefulWidget {
   final String email;
   final String token;
 
-  HomeScreen({
+  const HomeScreen({
+    super.key, 
     required this.userId,
     required this.name,
     required this.email,
@@ -51,7 +52,7 @@ class HomeScreenState extends State<HomeScreen> {
         // backgroundColor: const Color.fromARGB(255, 251, 251, 251),
         actions: [
           IconButton(
-            icon: Icon(Icons.exit_to_app_rounded), // You can use any icon you prefer
+            icon: const Icon(Icons.exit_to_app_rounded), // You can use any icon you prefer
             onPressed: () => userOnLogout(context)
           ),
         ],
@@ -104,13 +105,12 @@ class HomeScreenState extends State<HomeScreen> {
                         radius: 40,
                         backgroundImage: NetworkImage(
                           userProfile != null && userProfile!.data.profilePictureUrl.isNotEmpty
-                              ? userProfile!.data.profilePictureUrl.replaceAll('${Api.baseUrl}', '')
+                              ? userProfile!.data.profilePictureUrl.replaceAll(Api.baseUrl, '')
                               : 'assets/images/profile_placeholder.png', // Default placeholder
                         ),
-                        
                       ),
 
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,16 +119,16 @@ class HomeScreenState extends State<HomeScreen> {
                               widget.name,
                               style: textTheme.titleLarge,
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Text(
                               userProfile?.data.occupation ?? '',  // Fallback if no profile is found
                               style: textTheme.titleMedium,
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Row(
                               children: [
                                 Icon(Icons.email, size: 16, color: iconTheme.color),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
                                   widget.email,
                                   style: textTheme.titleSmall,
@@ -159,7 +159,7 @@ class HomeScreenState extends State<HomeScreen> {
                       radius: 40,
                       backgroundImage: AssetImage('assets/images/profile_placeholder.png'), // Replace with your asset
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,16 +168,16 @@ class HomeScreenState extends State<HomeScreen> {
                             'Norvin Crujido',
                             style: textTheme.titleLarge,
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             'Flutter Developer',
                             style: textTheme.titleMedium,
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               Icon(Icons.email, size: 16, color: iconTheme.color),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
                                 'norvin@example.com',
                                 style: textTheme.titleSmall,
