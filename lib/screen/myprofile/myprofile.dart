@@ -1,11 +1,55 @@
 import 'package:flutter/material.dart';
+// import '../../model/userprofile.dart';
+import '../../api/api.dart';
 
 class MyProfileScreen extends StatefulWidget {
+  final int userId;
+  final String profile_picture_url;
+  final String phone_number;
+  final String social_media_links;
+  final String address;
+  final String country;
+  final String city;
+  final String municipality;
+  final String barangay;
+  final String zone;
+  final String street;
+  final String postal_code;
+  final String driver_license_number;
+  final String national_id;
+  final String passport_number;
+  final String social_security_number;
+  final String occupation;
+  final DateTime? updated_at;
+
+
+  MyProfileScreen({
+    required this.userId,
+    required this.profile_picture_url,
+    required this.phone_number,
+    required this.social_media_links,
+    required this.address,
+    required this.country,
+    required this.city,
+    required this.municipality,
+    required this.barangay,
+    required this.zone,
+    required this.street,
+    required this.postal_code,
+    required this.driver_license_number,
+    required this.national_id,
+    required this.passport_number,
+    required this.social_security_number,
+    required this.occupation,
+    this.updated_at,
+  });
+
   @override
   MyProfileScreenState createState() => MyProfileScreenState();
 }
 
 class MyProfileScreenState extends State<MyProfileScreen> {
+  
   // This variable will control the expansion of each card
   bool isProfileExpanded = false;
   bool isAddressExpanded = false;
@@ -28,8 +72,13 @@ class MyProfileScreenState extends State<MyProfileScreen> {
           children: [
             // CircleAvatar for the profile picture
             CircleAvatar(
-              radius: 60, // Adjust the radius to your desired size
-              backgroundImage: AssetImage('assets/images/profile_placeholder.png'), // Replace with your image
+              radius: 70,
+              backgroundImage: NetworkImage(
+                widget.profile_picture_url.isNotEmpty
+                    ? widget.profile_picture_url.replaceAll(Api.baseUrl, '')
+                    : 'assets/images/profile_placeholder.png', // Default placeholder
+              ),
+
             ),
             SizedBox(height: 20), // Space between avatar and card
 
@@ -170,9 +219,37 @@ class MyProfileScreenState extends State<MyProfileScreen> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => (),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+                        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        "Save Profile",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
-        ),
+        ),  
       ),
     );
+    
   }
 }

@@ -4,14 +4,17 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:rentrealm/model/login.dart';
+import 'package:rentrealm/model/logout.dart';
 //api
 import '../api/api.dart';
 //models
 import '../model/register.dart';
+import '../model/logout.dart';
+import '../model/userprofile.dart';
 // import '';
 class ApiService {
 
-
+  //register api call
   Future<userRegisterResponse?> registerUser({
     required String name,
     required String email,
@@ -87,6 +90,65 @@ class ApiService {
       }
     } catch (e) {
       print('Exeption: $e');
+      return null;
+    }
+  }
+
+
+  //logout api call
+  Future<userLogoutResponse?>logout({
+    required String token,
+  }) async {
+    final url = Uri.parse('${Api.baseUrl}/logout');
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization" : " Bearer $token",
+        },
+      );
+
+      if(response.statusCode == 200 || response.statusCode == 201 ) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return userLogoutResponse.fromJson(responseData);
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exception: $e');
+      return null;
+    }
+  }
+
+  Future<UserProfileResponse?>fetchUserProfile({
+    required int userId,
+    required String token,
+  }) async {
+    final url = Uri.parse('${Api.baseUrl}/tenant/profile/show/${userId}');
+    
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization" : " Bearer $token",
+        }
+      );
+      print(response.body); 
+      if(response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return UserProfileResponse.fromJson(responseData);
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exception: ${e}');
       return null;
     }
   }

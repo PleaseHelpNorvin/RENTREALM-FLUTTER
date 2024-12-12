@@ -81,8 +81,8 @@ class LoginScreenState extends State<LoginScreen> {
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(50),
                   backgroundColor: Colors.blue,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   foregroundColor: Colors.white,
                 ),

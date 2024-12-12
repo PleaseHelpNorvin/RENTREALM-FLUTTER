@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rentrealm/screen/auth/login.dart';
+import 'package:rentrealm/screen/auth/register1.dart';
 import './screen/getstarted.dart';
 
 void main() {
@@ -38,28 +39,7 @@ class MyApp extends StatelessWidget {
           labelSmall: TextStyle(color: Colors.black),
         ),
       ),
-      home: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: 200.0,
-              pinned: true,
-              backgroundColor: Colors.white,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  color: Colors.white,
-                ),
-                title: Text('Your Title'),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                GetstartedScreen(), // Your screen content
-              ]),
-            ),
-          ],
-        ),
-      ),
+      home: GetstartedScreen()
     );
   }
 }

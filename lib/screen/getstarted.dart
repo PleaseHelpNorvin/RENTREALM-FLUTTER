@@ -19,7 +19,7 @@ class GetStartedScreenState extends State<GetstartedScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               // Introduction Text
-              Text(
+              const Text(
                 "Welcome To Rent Realm:!",
                 style: TextStyle(
                   fontSize: 32,
@@ -30,7 +30,7 @@ class GetStartedScreenState extends State<GetstartedScreen> {
               ),
               SizedBox(height: 20),
               // Subtitle
-              Text(
+              const Text(
                 "Your journey starts here. Get started with a few simple steps.",
                 style: TextStyle(
                   fontSize: 18,
@@ -46,14 +46,14 @@ class GetStartedScreenState extends State<GetstartedScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40), backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Button color
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // Rounded corners
+                    borderRadius: BorderRadius.circular(10), // Rounded corners
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Get Started",
                   style: TextStyle(
                     fontSize: 18,
-                    color: const Color.fromARGB(255, 0, 0, 0),
+                    color: Colors.blue,
                   ),
                 ),
               ),
