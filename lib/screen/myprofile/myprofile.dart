@@ -4,6 +4,7 @@ import 'package:rentrealm/utils/https.dart';
 import '../../api/api.dart';
 
 class MyProfileScreen extends StatefulWidget {
+  final String token;
   final int userId;
   final String profile_picture_url;
   final String phone_number;
@@ -25,6 +26,7 @@ class MyProfileScreen extends StatefulWidget {
 
   const MyProfileScreen({
     super.key,
+    required this.token,
     required this.userId,
     required this.profile_picture_url,
     required this.phone_number,
@@ -742,7 +744,7 @@ class MyProfileScreenState extends State<MyProfileScreen> {
   Future<void> _onUpdatedProfile(BuildContext context) async {
     // Gather the data from the controllers
     int userId = widget.userId; // Replace with actual user ID
-
+    String token = widget.token;
     // Prepare user data for the update
     String name = nameController.text;
     String email = emailController.text;
@@ -767,6 +769,7 @@ class MyProfileScreenState extends State<MyProfileScreen> {
     try {
       // Update user data (e.g., name, email, password)
       await ApiService.updateUser(
+        token: token,
         userId: userId,
         name: name,
         email: email,
@@ -775,6 +778,7 @@ class MyProfileScreenState extends State<MyProfileScreen> {
 
       // Update profile data (e.g., address, country, etc.)
       await ApiService.updateProfileData(
+        token: widget.token,
         userId: userId,
         profileData: profileData,
         

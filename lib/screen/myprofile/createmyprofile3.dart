@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../../utils/https.dart';
 
 class CreatemyprofileScreen3 extends StatefulWidget {
   // user related params
+  final String token;
   final int userId;
   final String name;
   final String email;
   final String profileImageUrl;
   final String phoneNumber;
+  final String socialMediaLinks;
   // address related params
   final String city;
   final String municipality;
-  final String State;
+  final String state;
   final String country;
   final String barangay;
   final String street;
@@ -20,15 +23,17 @@ class CreatemyprofileScreen3 extends StatefulWidget {
 
   CreatemyprofileScreen3({
     // user related params
+    required this.token,
     required this.userId,
     required this.name,
     required this.email,
     required this.profileImageUrl,
     required this.phoneNumber,
+    required this.socialMediaLinks,
     // address related params
     required this.city,
     required this.municipality,
-    required this.State,
+    required this.state,
     required this.country,
     required this.barangay,
     required this.street,
@@ -43,6 +48,7 @@ class CreatemyprofileScreen3 extends StatefulWidget {
 class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
   final _formKey = GlobalKey<FormState>();
 
+  // profilePicturetest = ''
   // Controllers for the new fields
   final TextEditingController driverLicenseController = TextEditingController();
   final TextEditingController nationalIdController = TextEditingController();
@@ -148,14 +154,7 @@ class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
-                      // If the form is valid, proceed to the next action
-                      // Add logic here to save data or navigate to another screen
-                      // For example, you can print the entered values:
-                      print('Driver License: ${driverLicenseController.text}');
-                      print('National ID: ${nationalIdController.text}');
-                      print('Passport Number: ${passportNumberController.text}');
-                      print('SSN: ${ssnController.text}');
-                      print('Occupation: ${occupationController.text}');
+                      _onstoreProfile(context);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -177,4 +176,60 @@ class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
       ),
     );
   }
+
+ Future<void> _onstoreProfile(BuildContext context) async {
+  // Collect the data into a Map
+  final profileData = {
+    "profile_picture_url": widget.profileImageUrl,
+    "phone_number": widget.phoneNumber,
+    "social_media_links": widget.socialMediaLinks,
+    "country": widget.country,
+    "municipality": widget.municipality,
+    "city": widget.city,
+    "barangay": widget.barangay,
+    "street": widget.street,
+    "zone": widget.zone,
+    "postal_code": widget.postalCode,
+    "driver_license_number": driverLicenseController.text,
+    "national_id": nationalIdController.text,
+    "passport_number": passportNumberController.text,
+    "social_security_number": ssnController.text,
+    "occupation": occupationController.text,
+  };
+
+  // Debugging: Print all collected data
+  print('------------------Collected Profile Data------------------');
+  profileData.forEach((key, value) {
+    print('$key: $value');
+  });
+
+  // Call the API to store profile data
+  try {
+    final response = await ApiService.storeProfileData(
+      token: widget.token,
+      userId: widget.userId,
+      profileData: profileData,
+    );
+
+     
+
+    if (response != null && response.success) {
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Profile stored successfully: ${response.message}')),
+      );
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to store profile: ${response?.message ?? "Unknown error"}')),
+      );
+    }
+  } catch (e) {
+    print('Exception occurred: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error storing profile: $e')),
+    );
+  }
+}
+
 }

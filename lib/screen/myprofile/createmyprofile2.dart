@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'createmyprofile3.dart';
 
 class CreateMyProfileScreen2 extends StatefulWidget {
+  final String token;
   final int userId;
   final String name;
   final String email;
   final String profileImageUrl;
   final String phoneNumber;
+  final String socialMediaLinks;
 
   CreateMyProfileScreen2({
+    required this.token,
     required this.userId,
     required this.name,
     required this.email,
     required this.profileImageUrl,
     required this.phoneNumber,
+    required this.socialMediaLinks,
   });
 
   @override
@@ -192,16 +196,19 @@ class CreateMyProfileScreen2State extends State<CreateMyProfileScreen2> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => CreatemyprofileScreen3(
-                                        // Pass user-related fields
+                                        // Pass user-rerlated fields
+                                        token: widget.token,
                                         userId: widget.userId,
                                         name: widget.name,
                                         email: widget.email,
                                         profileImageUrl: widget.profileImageUrl,
                                         phoneNumber: widget.phoneNumber,
+                                        socialMediaLinks:widget.socialMediaLinks,
+                                        
                                         // Pass address-related fields
                                         city: cityController.text,
                                         municipality: municipalityController.text,
-                                        State: stateController.text,
+                                        state: stateController.text,
                                         country: countryController.text,
                                         barangay: barangayController.text,
                                         street: streetController.text,

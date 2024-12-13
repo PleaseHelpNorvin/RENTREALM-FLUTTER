@@ -7,7 +7,7 @@ import '../api/api.dart';
 
 import '../model/userprofile.dart';
 import 'myprofile/myProfile.dart';
-import 'myprofile/createmyprofle1.dart';
+import 'myprofile/createmyprofile1.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -81,6 +81,7 @@ class HomeScreenState extends State<HomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => MyProfileScreen(
+                          token: widget.token,
                           userId: widget.userId,
                           profile_picture_url: userProfile?.data.profilePictureUrl?? '',
                           phone_number: userProfile?.data.phoneNumber?? '',
@@ -307,6 +308,7 @@ class HomeScreenState extends State<HomeScreen> {
           context,
           MaterialPageRoute(
             builder: (context) => CreateMyProfileScreen1(
+              token: widget.token,
               userId: widget.userId, 
               name: widget.name, 
               email: widget.email,

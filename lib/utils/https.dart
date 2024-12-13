@@ -11,17 +11,17 @@ import '../api/api.dart';
 import '../model/register.dart';
 import '../model/logout.dart';
 import '../model/userprofile.dart';
+
 // import '';
 class ApiService {
-
   //register api call
   Future<userRegisterResponse?> registerUser({
     required String name,
     required String email,
     required String password,
   }) async {
-
-    final url = Uri.parse('${Api.baseUrl}/create/tenant'); // Replace with your API endpoint
+    final url = Uri.parse(
+        '${Api.baseUrl}/create/tenant'); // Replace with your API endpoint
 
     try {
       // Prepare request body
@@ -44,7 +44,8 @@ class ApiService {
       // Check for successful response
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        return userRegisterResponse.fromJson(responseData); // Parse response into model
+        return userRegisterResponse
+            .fromJson(responseData); // Parse response into model
       } else {
         // Handle errors
         print('Error: ${response.statusCode} - ${response.body}');
@@ -58,7 +59,7 @@ class ApiService {
   }
 
   //login api call
-  Future<userLoginResponse?>loginUser({
+  Future<userLoginResponse?> loginUser({
     required String email,
     required String password,
   }) async {
@@ -67,8 +68,8 @@ class ApiService {
     try {
       // Prepare request body
       final body = {
-        "email" : email,
-        "password" : password,
+        "email": email,
+        "password": password,
       };
 
       // Make POST request
@@ -81,7 +82,7 @@ class ApiService {
         body: jsonEncode(body),
       );
 
-      if(response.statusCode == 200 || response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         return userLoginResponse.fromJson(responseData);
       } else {
@@ -94,9 +95,8 @@ class ApiService {
     }
   }
 
-
   //logout api call
-  Future<userLogoutResponse?>logout({
+  Future<userLogoutResponse?> logout({
     required String token,
   }) async {
     final url = Uri.parse('${Api.baseUrl}/logout');
@@ -107,11 +107,11 @@ class ApiService {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization" : " Bearer $token",
+          "Authorization": " Bearer $token",
         },
       );
 
-      if(response.statusCode == 200 || response.statusCode == 201 ) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         return userLogoutResponse.fromJson(responseData);
       } else {
@@ -124,23 +124,20 @@ class ApiService {
     }
   }
 
-  Future<UserProfileResponse?>fetchUserProfile({
+  Future<UserProfileResponse?> fetchUserProfile({
     required int userId,
     required String token,
   }) async {
     final url = Uri.parse('${Api.baseUrl}/tenant/profile/show/${userId}');
-    
+
     try {
-      final response = await http.get(
-        url,
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization" : " Bearer $token",
-        }
-      );
-      print(response.body); 
-      if(response.statusCode == 200 || response.statusCode == 201) {
+      final response = await http.get(url, headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": " Bearer $token",
+      });
+      print(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         return UserProfileResponse.fromJson(responseData);
       } else {
@@ -154,16 +151,22 @@ class ApiService {
   }
 
   static Future<void> updateUser({
+    required String token,
     required int userId,
     required String name,
     required String email,
     required String password,
   }) async {
-    final url = Uri.parse('${Api.baseUrl}/updateUser/$userId'); // Adjust the endpoint
+    final url =
+        Uri.parse('${Api.baseUrl}/updateUser/$userId'); // Adjust the endpoint
 
     final response = await http.put(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'authorization': 'Bearer $token',
+      },
       body: jsonEncode({
         'name': name,
         'email': email,
@@ -176,16 +179,21 @@ class ApiService {
     }
   }
 
-
   static Future<void> updateProfileData({
+    required String token,
     required int userId,
     required Map<String, String> profileData,
   }) async {
-    final url = Uri.parse('${Api.baseUrl}/updateProfile/$userId'); // Adjust the endpoint
+    final url = Uri.parse(
+        '${Api.baseUrl}/updateProfile/$userId'); // Adjust the endpoint
 
     final response = await http.put(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": " Bearer $token",
+      },
       body: jsonEncode(profileData),
     );
 
@@ -194,5 +202,62 @@ class ApiService {
     }
   }
 
-  
+  static Future<UserProfileResponse?> storeProfileData({
+    required String token,
+    required int userId,
+    required Map<String, String> profileData,
+    File? profilePicture, // Profile picture file (optional)
+  }) async {
+    final url = Uri.parse('${Api.baseUrl}/tenant/profile/store?user_id=$userId');
+
+    try {
+      var request = http.MultipartRequest('POST', url)
+        ..headers.addAll({
+          "Authorization": "Bearer $token", // Corrected header
+        });
+
+      // Add other fields as form data
+      request.fields['phone_number'] = profileData["phone_number"] ?? "";
+      request.fields['country'] = profileData["country"] ?? "";
+      request.fields['municipality'] = profileData["municipality"] ?? "";
+      request.fields['city'] = profileData["city"] ?? "";
+      request.fields['barangay'] = profileData["barangay"] ?? "";
+      request.fields['street'] = profileData["street"] ?? "";
+      request.fields['zone'] = profileData["zone"] ?? "";
+      request.fields['postal_code'] = profileData["postal_code"] ?? "";
+      request.fields['driver_license_number'] = profileData["driver_license_number"] ?? "";
+      request.fields['national_id'] = profileData["national_id"] ?? "";
+      request.fields['passport_number'] = profileData["passport_number"] ?? "";
+      request.fields['social_security_number'] = profileData["social_security_number"] ?? "";
+      request.fields['occupation'] = profileData["occupation"] ?? "";
+
+      // Add the image file if available
+      if (profilePicture != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'profile_picture_url', 
+          profilePicture.path,
+          contentType: MediaType('image', 'jpeg'), // Change if it's another image format
+        ));
+      }
+
+      // Send the request
+      final response = await request.send();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Read the response stream
+        final responseData = await response.stream.bytesToString();
+        print("Success: $responseData");
+
+        // Parse and return the response as needed
+        return UserProfileResponse.fromJson(jsonDecode(responseData));
+      } else {
+        print("Failed: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print('Exception: $e');
+      return null;
+    }
+  }
+
 }

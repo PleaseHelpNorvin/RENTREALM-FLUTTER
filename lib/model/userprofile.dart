@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../api/api.dart';
 
 class UserProfileResponse {
@@ -18,7 +20,7 @@ class UserProfileResponse {
 
 class ProfileData {
   final int userId;
-  final String profilePictureUrl;
+  final String profilePictureUrl;  // Changed from File to String
   final String phoneNumber;
   final String socialMediaLinks;
   final String municipality;
@@ -40,7 +42,7 @@ class ProfileData {
 
   ProfileData({
     required this.userId,
-    required this.profilePictureUrl,
+    required this.profilePictureUrl, // Now a String
     required this.phoneNumber,
     required this.socialMediaLinks,
     required this.municipality,
@@ -63,14 +65,10 @@ class ProfileData {
 
   factory ProfileData.fromJson(Map<String, dynamic> json) {
     return ProfileData(
-      userId: json['user_id'],
-
-      profilePictureUrl: json['profile_picture_url'] != null && json['profile_picture_url'].isNotEmpty
-          ? json['profile_picture_url'] ?? ''
-          : 'assets/images/profile_placeholder.png',
-
+      userId: int.tryParse(json['user_id'].toString()) ?? 0,
+      profilePictureUrl: json['profile_picture_url'] ?? 'assets/images/profile_placeholder.png',  // URL now handled as string
       phoneNumber: json['phone_number'],
-      socialMediaLinks: json [''] ?? '',
+      socialMediaLinks: json['social_media_links'] ?? '',
       municipality: json['municipality'] ?? '',
       city: json['city'] ?? '',
       barangay: json['barangay'] ?? '',
@@ -84,8 +82,8 @@ class ProfileData {
       socialSecurityNumber: json['social_security_number'] ?? '',
       occupation: json['occupation'] ?? 'Not set yet',
       address: json['address'] ?? '',
-      updatedAt: DateTime.parse(json['updated_at']) ,
-      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
       id: json['id'],
     );
   }
