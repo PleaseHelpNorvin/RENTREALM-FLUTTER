@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../components/alertutils.dart';
 import '../../utils/https.dart';
 import './register1.dart';
 import '../home.dart';
@@ -19,7 +20,7 @@ class LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   String? emailError;
   String? passwordError;
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,33 +124,55 @@ class LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    // Call your API service here to perform login
-    final response = await apiService.loginUser(
-      email: email,
-      password: password,
-    );
-
-    setState(() {
-      isLoading = false;
-    });
-
-    if (response != null && response.success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login Successful: ${response.message}')),
+    try {
+      // Call your API service here to perform login
+      final response = await apiService.loginUser(
+        email: email,
+        password: password,
       );
 
-      Navigator.pushReplacement(
+      setState(() {
+        isLoading = false;
+      });
+
+      if (response != null && response.success) {
+        AlertUtils.showSuccessAlert(
+          context,
+          title: 'Login Successful',
+          message: response.message ?? 'Welcome!',
+        );
+
+        // Delay navigation to let the alert display momentarily
+        await Future.delayed(const Duration(seconds: 1));
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              userId: response.data?.user.id ?? 0,
+              name: response.data?.user.name ?? '',
+              email: email,
+              token: response.data?.token ?? '',
+            ),
+          ),
+        );
+      } else {
+        AlertUtils.showErrorAlert(
+          context,
+          title: 'Login Failed',
+          message: response?.message ?? 'Invalid credentials or network issue.',
+        );
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+
+      // Display an error alert for unexpected exceptions
+      AlertUtils.showErrorAlert(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(
-          userId: response.data?.user.id ?? 0,
-          name: response.data?.user.name ?? '',
-          email: email,
-          token: response.data?.token ?? '',
-        )),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login Failed: ${response?.message}')),
+        title: 'Error',
+        message: 'An unexpected error occurred. Please try again.',
       );
     }
   }

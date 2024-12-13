@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:rentrealm/screen/auth/login.dart';
 import 'package:rentrealm/utils/https.dart';
 import '../api/api.dart';
 
 import '../model/userprofile.dart';
 import 'myprofile/myProfile.dart';
+import 'myprofile/createmyprofle1.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final int userId;
@@ -278,42 +281,70 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
     Future<void> _fetchUserProfile() async {
-      final response = await apiService.fetchUserProfile(userId: widget.userId, token: widget.token);
-      if (response != null) {
-        setState(() {
-          userProfile = response;
-          _profileFound = true;
-        });
-      } else {
+  final response = await apiService.fetchUserProfile(
+    userId: widget.userId,
+    token: widget.token,
+  );
+
+  if (response != null) {
+    setState(() {
+      userProfile = response;
+      _profileFound = true;
+    });
+  } else {
+    // Show an alert and navigate only when "Okay" is tapped
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.info,
+      title: 'Profile Not Found',
+      text: 'Please setup your profile',
+      onConfirmBtnTap: () {
+        // Close the alert
+        Navigator.pop(context);
+
+        // Navigate to MyProfileScreen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MyProfileScreen(
-              userId: widget.userId,
-              profile_picture_url: userProfile?.data.profilePictureUrl?? '',
-              phone_number: userProfile?.data.phoneNumber?? '',
-              social_media_links: userProfile?.data.socialMediaLinks?? '', 
-              address: userProfile?.data.address ?? '', 
-              country: userProfile?.data.country ?? '', 
-              city: userProfile?.data.city ?? '', 
-              municipality: userProfile?.data.municipality ?? '', 
-              barangay: userProfile?.data.barangay ?? '', 
-              zone: userProfile?.data.zone ?? '', 
-              street: userProfile?.data.street ?? '', 
-              postal_code: userProfile?.data.postalCode ?? '', 
-              driver_license_number: userProfile?.data.driverLicenseNumber ?? '', 
-              national_id: userProfile?.data.driverLicenseNumber ?? '', 
-              passport_number: userProfile?.data.passportNumber ?? '', 
-              social_security_number: userProfile?.data.socialSecurityNumber ?? '', 
-              occupation: userProfile?.data.occupation ?? '', 
-              updated_at: userProfile?.data.updatedAt ,  
-          )),
+            builder: (context) => CreateMyProfileScreen1(
+              userId: widget.userId, 
+              name: widget.name, 
+              email: widget.email,
+              ))
+      
+          // MaterialPageRoute(
+          //   builder: (context) => MyProfileScreen(
+          //     userId: widget.userId,
+          //     profile_picture_url: userProfile?.data.profilePictureUrl ?? '',
+          //     phone_number: userProfile?.data.phoneNumber ?? '',
+          //     social_media_links: userProfile?.data.socialMediaLinks ?? '',
+          //     address: userProfile?.data.address ?? '',
+          //     country: userProfile?.data.country ?? '',
+          //     city: userProfile?.data.city ?? '',
+          //     municipality: userProfile?.data.municipality ?? '',
+          //     barangay: userProfile?.data.barangay ?? '',
+          //     zone: userProfile?.data.zone ?? '',
+          //     street: userProfile?.data.street ?? '',
+          //     postal_code: userProfile?.data.postalCode ?? '',
+          //     driver_license_number: userProfile?.data.driverLicenseNumber ?? '',
+          //     national_id: userProfile?.data.driverLicenseNumber ?? '',
+          //     passport_number: userProfile?.data.passportNumber ?? '',
+          //     social_security_number: userProfile?.data.socialSecurityNumber ?? '',
+          //     occupation: userProfile?.data.occupation ?? '',
+          //     updated_at: userProfile?.data.updatedAt,
+          //   ),
+          // ),
         );
+
+        // Update the state to reflect the profile not found
         setState(() {
-          _profileFound = false ;
+          _profileFound = false;
         });
-      }
-    }
+      },
+    );
+  }
+}
+
 
 
   Future<void>userOnLogout(BuildContext context) async {
