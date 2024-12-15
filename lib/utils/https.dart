@@ -202,11 +202,71 @@ class ApiService {
     }
   }
 
+  //solution 1
+  // static Future<UserProfileResponse?> storeProfileData({
+  //   required String token,
+  //   required int userId,
+  //   required Map<String, String> profileData,
+  //   File? profilePicture, // Profile picture file (optional)
+  // }) async {
+  //   final url = Uri.parse('${Api.baseUrl}/tenant/profile/store?user_id=$userId');
+
+  //   try {
+  //     var request = http.MultipartRequest('POST', url)
+  //       ..headers.addAll({
+  //         "Authorization": "Bearer $token", // Corrected header
+  //       });
+
+  //     // Add other fields as form data
+  //     request.fields['profile_picture_url'] = profileData["profile_picture_url"] ?? "";
+  //     request.fields['phone_number'] = profileData["phone_number"] ?? "";
+  //     request.fields['country'] = profileData["country"] ?? "";
+  //     request.fields['municipality'] = profileData["municipality"] ?? "";
+  //     request.fields['city'] = profileData["city"] ?? "";
+  //     request.fields['barangay'] = profileData["barangay"] ?? "";
+  //     request.fields['street'] = profileData["street"] ?? "";
+  //     request.fields['zone'] = profileData["zone"] ?? "";
+  //     request.fields['postal_code'] = profileData["postal_code"] ?? "";
+  //     request.fields['driver_license_number'] = profileData["driver_license_number"] ?? "";
+  //     request.fields['national_id'] = profileData["national_id"] ?? "";
+  //     request.fields['passport_number'] = profileData["passport_number"] ?? "";
+  //     request.fields['social_security_number'] = profileData["social_security_number"] ?? "";
+  //     request.fields['occupation'] = profileData["occupation"] ?? "";
+
+  //     // Add the image file if available
+  //     if (profileData != null) {
+  //       request.files.add(await http.MultipartFile.fromPath(
+  //         'profile_picture_url', 
+  //         profilePicture.path,
+  //         contentType: MediaType('image', 'jpeg'), // Change if it's another image format
+  //       ));
+  //     }
+
+  //     // Send the request
+  //     final response = await request.send();
+
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       // Read the response stream
+  //       final responseData = await response.stream.bytesToString();
+  //       print("Success: $responseData");
+
+  //       // Parse and return the response as needed
+  //       return UserProfileResponse.fromJson(jsonDecode(responseData));
+  //     } else {
+  //       print("Failed: ${response.statusCode}");
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     print('Exception: $e');
+  //     return null;
+  //   }
+  // }
+
+  // solution 2
   static Future<UserProfileResponse?> storeProfileData({
     required String token,
     required int userId,
     required Map<String, String> profileData,
-    File? profilePicture, // Profile picture file (optional)
   }) async {
     final url = Uri.parse('${Api.baseUrl}/tenant/profile/store?user_id=$userId');
 
@@ -232,12 +292,17 @@ class ApiService {
       request.fields['occupation'] = profileData["occupation"] ?? "";
 
       // Add the image file if available
-      if (profilePicture != null) {
-        request.files.add(await http.MultipartFile.fromPath(
-          'profile_picture_url', 
-          profilePicture.path,
-          contentType: MediaType('image', 'jpeg'), // Change if it's another image format
-        ));
+      String? imagePath = profileData["profile_picture_url"];
+      if (imagePath != null && imagePath.isNotEmpty) {
+        // Check if the path is a valid file
+        File imageFile = File(imagePath);
+        if (imageFile.existsSync()) {
+          request.files.add(await http.MultipartFile.fromPath(
+            'profile_picture_url',
+            imagePath,
+            contentType: MediaType('image', 'jpeg'), // Change if it's another image format
+          ));
+        }
       }
 
       // Send the request

@@ -28,14 +28,14 @@ class CreateMyProfileScreen2State extends State<CreateMyProfileScreen2> {
   final _formKey = GlobalKey<FormState>();
 
   // Controllers to capture the input data
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController municipalityController = TextEditingController();
-  final TextEditingController stateController = TextEditingController();
-  final TextEditingController countryController = TextEditingController();
-  final TextEditingController barangayController = TextEditingController();
-  final TextEditingController streetController = TextEditingController();
-  final TextEditingController zoneController = TextEditingController();
-  final TextEditingController postalCodeController = TextEditingController();
+  final TextEditingController cityController = TextEditingController(text: 'test 1');
+  final TextEditingController municipalityController = TextEditingController(text: 'test 2');
+  // final TextEditingController stateController = TextEditingController();
+  final TextEditingController countryController = TextEditingController(text: 'test 3');
+  final TextEditingController barangayController = TextEditingController(text: 'test 4');
+  final TextEditingController streetController = TextEditingController(text: 'test 5');
+  final TextEditingController zoneController = TextEditingController(text: 'test 6');
+  final TextEditingController postalCodeController = TextEditingController(text: 'test 7');
 
   @override
   Widget build(BuildContext context) {
@@ -89,22 +89,22 @@ class CreateMyProfileScreen2State extends State<CreateMyProfileScreen2> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 16),
+                            // const SizedBox(height: 16),
 
-                            // State Field
-                            TextFormField(
-                              controller: stateController,
-                              decoration: const InputDecoration(
-                                labelText: 'State',
-                                border: OutlineInputBorder(),
-                              ),
-                              validator: (value) {
-                                if (value != null && value.isNotEmpty && value.length > 100) {
-                                  return 'State should not exceed 100 characters';
-                                }
-                                return null;
-                              },
-                            ),
+                            // // State Field
+                            // TextFormField(
+                            //   controller: stateController,
+                            //   decoration: const InputDecoration(
+                            //     labelText: 'State',
+                            //     border: OutlineInputBorder(),
+                            //   ),
+                            //   validator: (value) {
+                            //     if (value != null && value.isNotEmpty && value.length > 100) {
+                            //       return 'State should not exceed 100 characters';
+                            //     }
+                            //     return null;
+                            //   },
+                            // ),
                             const SizedBox(height: 16),
 
                             // Country Field
@@ -164,7 +164,7 @@ class CreateMyProfileScreen2State extends State<CreateMyProfileScreen2> {
                               ),
                               validator: (value) {
                                 if (value != null && value.isNotEmpty && value.length > 255) {
-                                  return 'Zone should not exceed 255 characters';
+                                  return 'Zone should not exceed 255 charsacters';
                                 }
                                 return null;
                               },
@@ -208,7 +208,7 @@ class CreateMyProfileScreen2State extends State<CreateMyProfileScreen2> {
                                         // Pass address-related fields
                                         city: cityController.text,
                                         municipality: municipalityController.text,
-                                        state: stateController.text,
+                                        // state: stateController.text,
                                         country: countryController.text,
                                         barangay: barangayController.text,
                                         street: streetController.text,

@@ -9,10 +9,10 @@ class Register1Screen extends StatefulWidget {
 }
 
 class Register1ScreenState extends State<Register1Screen> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController(text: 'Norvin S Crujido');
+  final TextEditingController emailController = TextEditingController(text: 'test@test.com');
+  final TextEditingController passwordController = TextEditingController(text: 'password');
+  final TextEditingController confirmPasswordController = TextEditingController(text: 'password');
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 

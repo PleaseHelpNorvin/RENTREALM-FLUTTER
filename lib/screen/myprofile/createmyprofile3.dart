@@ -14,7 +14,7 @@ class CreatemyprofileScreen3 extends StatefulWidget {
   // address related params
   final String city;
   final String municipality;
-  final String state;
+  // final String state;
   final String country;
   final String barangay;
   final String street;
@@ -33,7 +33,7 @@ class CreatemyprofileScreen3 extends StatefulWidget {
     // address related params
     required this.city,
     required this.municipality,
-    required this.state,
+    // required this.state,
     required this.country,
     required this.barangay,
     required this.street,
@@ -50,11 +50,11 @@ class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
 
   // profilePicturetest = ''
   // Controllers for the new fields
-  final TextEditingController driverLicenseController = TextEditingController();
-  final TextEditingController nationalIdController = TextEditingController();
-  final TextEditingController passportNumberController = TextEditingController();
-  final TextEditingController ssnController = TextEditingController();
-  final TextEditingController occupationController = TextEditingController();
+  final TextEditingController driverLicenseController = TextEditingController(text: 'test 8');
+  final TextEditingController nationalIdController = TextEditingController(text: 'test 9');
+  final TextEditingController passportNumberController = TextEditingController(text: 'test 10');
+  final TextEditingController ssnController = TextEditingController(text: 'text 11');
+  final TextEditingController occupationController = TextEditingController(text: 'test 12');
 
   @override
   Widget build(BuildContext context) {

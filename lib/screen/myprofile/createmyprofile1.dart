@@ -24,8 +24,8 @@ class CreateMyProfileScreenState1 extends State<CreateMyProfileScreen1> {
   String profileImageUrl = "assets/images/profile_placeholder.png"; // Placeholder image URL
   File? _selectedImage; // Store selected image
 
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController socialMediaLinksController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController(text: '09454365069');
+  TextEditingController socialMediaLinksController = TextEditingController(text: 'Norvin S Crujido - facebook');
 
   // Add a key for the form validation
   final _formKey = GlobalKey<FormState>();
