@@ -66,7 +66,7 @@ class ProfileData {
   factory ProfileData.fromJson(Map<String, dynamic> json) {
     return ProfileData(
       userId: int.tryParse(json['user_id'].toString()) ?? 0,
-      profilePictureUrl: json['profile_picture_url'] ?? 'assets/images/profile_placeholder.png',  // URL now handled as string
+      profilePictureUrl: json['profile_picture_url'],  // URL now handled as string
       phoneNumber: json['phone_number'],
       socialMediaLinks: json['social_media_links'] ?? '',
       municipality: json['municipality'] ?? '',

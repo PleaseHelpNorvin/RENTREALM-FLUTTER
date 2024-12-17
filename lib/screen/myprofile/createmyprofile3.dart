@@ -8,7 +8,7 @@ class CreatemyprofileScreen3 extends StatefulWidget {
   final int userId;
   final String name;
   final String email;
-  final String profileImageUrl;
+  // final String profileImageUrl;
   final String phoneNumber;
   final String socialMediaLinks;
   // address related params
@@ -27,7 +27,7 @@ class CreatemyprofileScreen3 extends StatefulWidget {
     required this.userId,
     required this.name,
     required this.email,
-    required this.profileImageUrl,
+    // required this.profileImageUrl,
     required this.phoneNumber,
     required this.socialMediaLinks,
     // address related params
@@ -180,7 +180,7 @@ class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
  Future<void> _onstoreProfile(BuildContext context) async {
   // Collect the data into a Map
   final profileData = {
-    "profile_picture_url": widget.profileImageUrl,
+    // "profile_picture_url": widget.profileImageUrl,
     "phone_number": widget.phoneNumber,
     "social_media_links": widget.socialMediaLinks,
     "country": widget.country,

@@ -142,7 +142,7 @@ class CreateMyProfileScreenState1 extends State<CreateMyProfileScreen1> {
                               userId: widget.userId,
                               name: widget.name,
                               email: widget.email,
-                              profileImageUrl: _selectedImage?.path ?? profileImageUrl,
+                              // profileImageUrl: _selectedImage?.path ?? profileImageUrl,
                               phoneNumber: phoneNumberController.text,
                               socialMediaLinks: socialMediaLinksController.text,
                             ),

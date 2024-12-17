@@ -6,7 +6,7 @@ class CreateMyProfileScreen2 extends StatefulWidget {
   final int userId;
   final String name;
   final String email;
-  final String profileImageUrl;
+  // final String profileImageUrl;
   final String phoneNumber;
   final String socialMediaLinks;
 
@@ -15,7 +15,7 @@ class CreateMyProfileScreen2 extends StatefulWidget {
     required this.userId,
     required this.name,
     required this.email,
-    required this.profileImageUrl,
+    // required this.profileImageUrl,
     required this.phoneNumber,
     required this.socialMediaLinks,
   });
@@ -201,7 +201,7 @@ class CreateMyProfileScreen2State extends State<CreateMyProfileScreen2> {
                                         userId: widget.userId,
                                         name: widget.name,
                                         email: widget.email,
-                                        profileImageUrl: widget.profileImageUrl,
+                                        // profileImageUrl: widget.profileImageUrl,
                                         phoneNumber: widget.phoneNumber,
                                         socialMediaLinks:widget.socialMediaLinks,
                                         
