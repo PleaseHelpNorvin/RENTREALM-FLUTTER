@@ -210,8 +210,9 @@ class CreateMyProfileScreenState1 extends State<CreateMyProfileScreen1> {
 
       // Step 5: Prepare Dio and the API endpoint
       final dio = Dio();
-      final apiUrl = '${Api.baseUrl}/tenant/profile/store?user_id=${widget.userId}'; // Replace with your endpoint
+      final apiUrl = '${Api.baseUrl}/tenant/profile/storepicture?user_id=${widget.userId}'; // Replace with your endpoint
       final filetype = lookupMimeType(savedFile.path) ?? 'image/jpeg';
+      print("Detected MIME type: $filetype");
 
       // Step 6: Create FormData with compressed image
       final formData = FormData.fromMap({
