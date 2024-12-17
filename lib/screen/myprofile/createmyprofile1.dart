@@ -1,7 +1,15 @@
 import 'dart:io'; // Import the required package for File
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:image/image.dart' as img;
+import '../../api/api.dart';
 import 'createmyprofile2.dart'; // Make sure this screen is properly defined
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:mime/mime.dart';
+
+
 
 class CreateMyProfileScreen1 extends StatefulWidget {
   final String token;
@@ -53,7 +61,9 @@ class CreateMyProfileScreenState1 extends State<CreateMyProfileScreen1> {
                       children: [
                         // Profile Picture
                         GestureDetector(
-                          onTap: _pickImage, // Open gallery/camera on tap
+                          onTap: () async {
+                            await pickSaveUploadImageWithDio(context);
+                          }, // Open gallery/camera on tap
                           child: CircleAvatar(
                             radius: 100,
                             backgroundImage: _selectedImage != null
@@ -162,14 +172,91 @@ class CreateMyProfileScreenState1 extends State<CreateMyProfileScreen1> {
   }
 
   // Pick image from gallery
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery, // Use ImageSource.camera for camera
-    );
-    if (pickedFile != null) {
+  Future<void> pickSaveUploadImageWithDio(context) async {
+    try {
+      // Step 1: Pick an image from the camera
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(source: ImageSource.camera);
+
+      if (pickedFile == null) {
+        print("No image selected.");
+        return;
+      }
+
+      // Step 2: Load the image file into memory and compress
+      final img.Image? image = img.decodeImage(await File(pickedFile.path).readAsBytes());
+      
+      if (image == null) {
+        print("Failed to decode image.");
+        return;
+      }
+
+      // Compress the image (you can adjust the quality as needed)
+      final compressedImage = img.encodeJpg(image, quality: 80); // Compress to JPG with 80% quality
+
+      // Step 3: Save the compressed image to a persistent directory
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = pickedFile.name; // Preserve the original filename
+      final savedPath = '${appDir.path}/$fileName';
+
+      final savedFile = await File(savedPath).writeAsBytes(compressedImage);
+      print("Saved file path: $savedPath");
+
+      // Step 4: Update the state with the compressed image
       setState(() {
-        _selectedImage = File(pickedFile.path); // Store the selected file
+        _selectedImage = savedFile; // Update the selected image
+        profileImageUrl = savedFile.path; // Update the profileImageUrl (optional)
       });
+
+      // Step 5: Prepare Dio and the API endpoint
+      final dio = Dio();
+      final apiUrl = '${Api.baseUrl}/tenant/profile/store?user_id=${widget.userId}'; // Replace with your endpoint
+      final filetype = lookupMimeType(savedFile.path) ?? 'image/jpeg';
+
+      // Step 6: Create FormData with compressed image
+      final formData = FormData.fromMap({
+        'profile_picture_url': await MultipartFile.fromFile(
+          savedFile.path, 
+          filename: fileName,
+          contentType: MediaType.parse(filetype),
+        ),
+      });
+
+      // Step 7: Upload the image with progress tracking
+      final response = await dio.post(
+        apiUrl,
+        data: formData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${widget.token}', // Replace with your token
+          },
+          validateStatus: (status) {
+            return status! < 600;
+          }
+        ),
+        onSendProgress: (sent, total) {
+          print("Progress: ${(sent / total * 100).toStringAsFixed(0)}%");
+        },
+      );
+
+      print('response: $response');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("Image uploaded successfully: ${response.data}");
+        // Step 8: Delete the saved file after successful upload (optional)
+        // await savedFile.delete();
+        print("Local image deleted after upload.");
+      } else {
+        print("Failed to upload image: ${response.statusCode} - ${response.data}");
+      }
+    } catch (e) {
+      if (e is DioError) {
+        print("DioError: ${e.response?.data}"); // Log more details if DioError occurs
+      } else {
+        print("Error: $e");
+      }
     }
   }
+
 }
