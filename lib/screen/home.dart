@@ -83,6 +83,8 @@ class HomeScreenState extends State<HomeScreen> {
                         builder: (context) => MyProfileScreen(
                           token: widget.token,
                           userId: widget.userId,
+                          name: widget.name,
+                          email: widget.email,
                           profile_picture_url: userProfile?.data.profilePictureUrl?? '',
                           phone_number: userProfile?.data.phoneNumber?? '',
                           social_media_links: userProfile?.data.socialMediaLinks?? '', 
@@ -281,71 +283,67 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-    Future<void> _fetchUserProfile() async {
-  final response = await apiService.fetchUserProfile(
-    userId: widget.userId,
-    token: widget.token,
-  );
+  Future<void> _fetchUserProfile() async {
+    try {
+      // Attempt to fetch the user profile data from the API
+      final response = await apiService.fetchUserProfile(
+        userId: widget.userId,
+        token: widget.token,
+      );
 
-  if (response != null) {
-    setState(() {
-      userProfile = response;
-      _profileFound = true;
-    });
-  } else {
-    // Show an alert and navigate only when "Okay" is tapped
+      if (response != null) {
+        // If the response is valid, update the state to reflect that
+        setState(() {
+          userProfile = response;
+          _profileFound = true;  // Indicate that the profile was found
+        });
+      } else {
+        // If the response is null, show an alert and navigate to profile creation
+        _showProfileNotFoundAlert();
+      }
+    } catch (e) {
+      // Handle any errors that occur during the API call
+      print('Error fetching user profile: $e');
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: 'There was an issue fetching your profile. Please try again.',
+      );
+    }
+  }
+
+  void _showProfileNotFoundAlert() {
     QuickAlert.show(
       context: context,
       type: QuickAlertType.info,
       title: 'Profile Not Found',
-      text: 'Please setup your profile',
+      text: 'Please set up your profile.',
       onConfirmBtnTap: () {
         // Close the alert
         Navigator.pop(context);
 
-        // Navigate to MyProfileScreen
+        // Navigate to the profile creation screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => CreateMyProfileScreen1(
               token: widget.token,
-              userId: widget.userId, 
-              name: widget.name, 
+              userId: widget.userId,
+              name: widget.name,
               email: widget.email,
-              ))
-      
-          // MaterialPageRoute(
-          //   builder: (context) => MyProfileScreen(
-          //     userId: widget.userId,
-          //     profile_picture_url: userProfile?.data.profilePictureUrl ?? '',
-          //     phone_number: userProfile?.data.phoneNumber ?? '',
-          //     social_media_links: userProfile?.data.socialMediaLinks ?? '',
-          //     address: userProfile?.data.address ?? '',
-          //     country: userProfile?.data.country ?? '',
-          //     city: userProfile?.data.city ?? '',
-          //     municipality: userProfile?.data.municipality ?? '',
-          //     barangay: userProfile?.data.barangay ?? '',
-          //     zone: userProfile?.data.zone ?? '',
-          //     street: userProfile?.data.street ?? '',
-          //     postal_code: userProfile?.data.postalCode ?? '',
-          //     driver_license_number: userProfile?.data.driverLicenseNumber ?? '',
-          //     national_id: userProfile?.data.driverLicenseNumber ?? '',
-          //     passport_number: userProfile?.data.passportNumber ?? '',
-          //     social_security_number: userProfile?.data.socialSecurityNumber ?? '',
-          //     occupation: userProfile?.data.occupation ?? '',
-          //     updated_at: userProfile?.data.updatedAt,
-          //   ),
-          // ),
+            ),
+          ),
         );
 
-        // Update the state to reflect the profile not found
+        // Optionally update the state here if you need to
         setState(() {
           _profileFound = false;
         });
       },
     );
   }
-}
+
 
 
 

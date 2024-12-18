@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:rentrealm/screen/home.dart';
 import '../../utils/https.dart';
 
 class CreatemyprofileScreen3 extends StatefulWidget {
@@ -154,7 +155,7 @@ class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
-                      _onstoreProfile(context);
+                      _onstoreProfileData(context);
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -177,7 +178,7 @@ class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
     );
   }
 
- Future<void> _onstoreProfile(BuildContext context) async {
+ Future<void> _onstoreProfileData(BuildContext context) async {
   // Collect the data into a Map
   final profileData = {
     // "profile_picture_url": widget.profileImageUrl,
@@ -206,18 +207,26 @@ class CreateMyProfileScreen3State extends State<CreatemyprofileScreen3> {
   // Call the API to store profile data
   try {
     final response = await ApiService.storeProfileData(
-      token: widget.token,
       userId: widget.userId,
+      token: widget.token,
       profileData: profileData,
     );
-
-     
-
     if (response != null && response.success) {
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Profile stored successfully: ${response.message}')),
       );
+      Navigator.pushReplacement(
+        context, 
+        MaterialPageRoute(builder: (context) => HomeScreen(
+            userId: widget.userId, 
+            name: widget.name, 
+            email: widget.email,
+            token: widget.token,
+          )
+        )
+      );
+
     } else {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(

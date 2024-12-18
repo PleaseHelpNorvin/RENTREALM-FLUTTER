@@ -1,6 +1,7 @@
 //libraries
 import 'dart:io';
 import 'dart:convert';
+// import 'dart:nativewrappers/_internal/vm/lib/internal_patch.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:rentrealm/model/login.dart';
@@ -10,6 +11,7 @@ import '../api/api.dart';
 //models
 import '../model/register.dart';
 import '../model/logout.dart';
+import '../model/updateUser.dart';
 import '../model/userprofile.dart';
 
 // import '';
@@ -150,7 +152,7 @@ class ApiService {
     }
   }
 
-  static Future<void> updateUser({
+  static Future<UserUpdateResponse?>updateUser({
     required String token,
     required int userId,
     required String name,
@@ -158,24 +160,33 @@ class ApiService {
     required String password,
   }) async {
     final url =
-        Uri.parse('${Api.baseUrl}/updateUser/$userId'); // Adjust the endpoint
+    Uri.parse('${Api.baseUrl}/tenant/user/update/$userId'); // Adjust the endpoint
 
-    final response = await http.put(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
-        'name': name,
-        'email': email,
-        'password': password,
-      }),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'password': password,
+        }),
+      );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update user data');
+      if(response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        return UserUpdateResponse.fromJson(responseData);
+      }else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exception: $e');
+      return null;
     }
   }
 
@@ -185,20 +196,25 @@ class ApiService {
     required Map<String, String> profileData,
   }) async {
     final url = Uri.parse(
-        '${Api.baseUrl}/updateProfile/$userId'); // Adjust the endpoint
+        '${Api.baseUrl}/tenant/profile/update/$userId'); // Adjust the endpoint
 
-    final response = await http.put(
-      url,
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": " Bearer $token",
-      },
-      body: jsonEncode(profileData),
-    );
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": " Bearer $token",
+        },
+        body: jsonEncode(profileData),
+      );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update profile data');
+      if (response.statusCode != 200) {
+        print('response body: ${response.body}');
+        // throw Exception('Failed to update profile data');
+      }
+    } catch (e) {
+      print('exception: $e');
     }
   }
 
@@ -207,7 +223,7 @@ class ApiService {
     required int userId,
     required Map<String, String> profileData,
   }) async {
-    final uri = Uri.parse('${Api.baseUrl}/tenant/profile/store?user_id=$token');
+    final uri = Uri.parse('${Api.baseUrl}/tenant/profile/store?user_id=$userId');
 
     try {
       final response = await http.post(
@@ -221,6 +237,7 @@ class ApiService {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
+        print('response.bdoy:  $responseData');
         return UserProfileResponse.fromJson(responseData);
       } else {
         print('Error: ${response.statusCode} - ${response.body}');
@@ -232,5 +249,7 @@ class ApiService {
       return null;
     }
   }
+  
+
   
 }
